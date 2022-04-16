@@ -1,16 +1,21 @@
 package com.william.yataco.testservice.domain.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class User {
 
-    private String username;
-    private String password;
+    private String id;
+    private boolean accountExpired;
+    private boolean accountLocked;
+    private long customerId;
+    private String dateCreated;
+    private String email;
+    private boolean enabled;
+    private String lastUpdated;
+    private String name;
 }

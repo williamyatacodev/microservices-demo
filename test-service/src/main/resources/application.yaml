@@ -1,0 +1,35 @@
+server:
+  port: 8088
+
+##LOGGER
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          client:
+            RestTemplate: DEBUG
+      apache:
+        #http: DEBUG
+    httpclient:
+      #wire: INFO
+
+spring:
+  application:
+    name: test-service
+  ##DATABASE
+  jpa:
+    hibernate:
+      ddl-auto:update
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:3306/demo_test
+    username: root
+    password: demo
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+application:
+  url-login: "https://api.finerio.mx/api/login"
+  url-me: "https://api.finerio.mx/api/me"
+  url-movement: "https://api.finerio.mx/api/users/{id}/movements?offset={offset}&max={max}"
+  list-max: 10

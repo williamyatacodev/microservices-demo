@@ -1,7 +1,11 @@
 package com.william.yataco.testservice.application.handler;
 
+import com.william.yataco.testservice.application.data.MovementResponse;
+import com.william.yataco.testservice.application.data.UserRequest;
 import com.william.yataco.testservice.domain.port.api.DemoServicePort;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class DemoHandler {
@@ -12,7 +16,7 @@ public class DemoHandler {
         this.demoServicePort = demoServicePort;
     }
 
-    public String processEvent(){
-        return demoServicePort.processEvent();
+    public List<MovementResponse> processEvent(UserRequest userRequest){
+        return demoServicePort.processEvent(userRequest);
     }
 }
