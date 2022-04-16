@@ -33,3 +33,12 @@ application:
   url-me: "https://api.finerio.mx/api/me"
   url-movement: "https://api.finerio.mx/api/users/{id}/movements?offset={offset}&max={max}"
   list-max: 10
+  
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      default-zone: http://localhost:8761/eureka
+    instance:
+      hostname: localhost
