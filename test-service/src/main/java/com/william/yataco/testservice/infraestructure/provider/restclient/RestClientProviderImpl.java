@@ -1,10 +1,7 @@
 package com.william.yataco.testservice.infraestructure.provider.restclient;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.william.yataco.testservice.application.data.UserRequest;
-import com.william.yataco.testservice.domain.model.Movement;
+import com.william.yataco.testservice.domain.model.Movements;
 import com.william.yataco.testservice.domain.model.User;
 import com.william.yataco.testservice.domain.model.UserToken;
 import com.william.yataco.testservice.infraestructure.configuration.ConfigProperties;
@@ -14,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -22,42 +18,35 @@ import java.util.Map;
 public class RestClientProviderImpl implements RestClientProvider {
 
     private final RestTemplate restTemplate;
-    private final ObjectMapper objectMapper;
     private final ConfigProperties configProperties;
 
-    public RestClientProviderImpl(RestTemplate restTemplate, ObjectMapper objectMapper, ConfigProperties configProperties) {
+    public RestClientProviderImpl(RestTemplate restTemplate, ConfigProperties configProperties) {
         this.restTemplate = restTemplate;
-        this.objectMapper = objectMapper;
         this.configProperties = configProperties;
     }
-
     @Override
     public UserToken loginToUser(UserRequest userRequest) {
-        UserToken userToken = restTemplate.postForObject(configProperties.getUrlLogin(),userRequest,UserToken.class);
-        return userToken;
+        return restTemplate.postForEntity(configProperties.getUrlLogin(),userRequest,UserToken.class).getBody();
     }
-
     @Override
     public User getInfoUser(String authorization) {
         HttpHeaders headers = getHeaders(authorization);
-        HttpEntity<User> jwtEntity = new HttpEntity<User>(headers);
+        HttpEntity<?> jwtEntity = new HttpEntity<>(headers);
         ResponseEntity<User> userResponseEntity = restTemplate.exchange(configProperties.getUrlMe(), HttpMethod.GET, jwtEntity,
                 User.class);
         return userResponseEntity.getBody();
     }
-
     @Override
-    public List<Movement> getMovements(String authorization, String identifierUser, int offSet) {
+    public Movements getMovements(String authorization, String identifierUser, int offSet) {
         HttpHeaders headers = getHeaders(authorization);
-        HttpEntity<Movement> movementHttpEntity = new HttpEntity<Movement>(headers);
+        HttpEntity<?> movementHttpEntity = new HttpEntity<>(headers);
         Map<String, String> parameters = new HashMap<>();
         parameters.put("id", identifierUser);
         parameters.put("offset", String.valueOf(offSet));
         parameters.put("max", configProperties.getListMax());
-        ResponseEntity<JsonNode> responseEntity = restTemplate.exchange(configProperties.getUrlMovement(),HttpMethod.GET,movementHttpEntity,JsonNode.class,parameters);
-        JsonNode jsonNodeResponse = responseEntity.getBody();
-        List<Movement> movementList = objectMapper.convertValue(jsonNodeResponse.get("data"), new TypeReference<List<Movement>>(){});
-        return movementList;
+        ResponseEntity<Movements> responseEntity = restTemplate.exchange(configProperties.getUrlMovement(),HttpMethod.GET,movementHttpEntity,
+                Movements.class,parameters);
+        return responseEntity.getBody();
     }
 
     private HttpHeaders getHeaders(String authorization) {

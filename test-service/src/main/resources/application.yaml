@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  port: 8082
 
 ##LOGGER
 logging:
@@ -14,13 +14,11 @@ logging:
     httpclient:
       #wire: INFO
 
+##DATABASE
 spring:
-  application:
-    name: test-service
-  ##DATABASE
   jpa:
     hibernate:
-      ddl-auto:update
+      ddl-auto: update
     show-sql: true
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:3306/demo_test
@@ -42,3 +40,5 @@ eureka:
       default-zone: http://localhost:8761/eureka
     instance:
       hostname: localhost
+  instance:
+    prefer-ip-address: true

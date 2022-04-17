@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Movement {
+
     private String id;
     private Double amount;
     private Double balance;
@@ -26,4 +27,5 @@ public class Movement {
     private String type;
     private Account account;
     private Account category;
+
 }

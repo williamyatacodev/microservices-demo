@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class DemoPersistenceAdapter implements DemoPersistencePort {
@@ -30,7 +29,7 @@ public class DemoPersistenceAdapter implements DemoPersistencePort {
             movementEntity.setType(movement.getType());
             movementEntity.setLastUpdated(OffsetDateTime.now());
             return movementEntity;
-        }).collect(Collectors.toList());
+        }).toList();
         movementEntityRepository.saveAllAndFlush(movementEntityList);
     }
 
@@ -43,6 +42,6 @@ public class DemoPersistenceAdapter implements DemoPersistencePort {
                         .dateCreated(movementEntity.getDateCreated())
                         .description(movementEntity.getDescription())
                         .type(movementEntity.getType())
-                        .build()).collect(Collectors.toList());
+                        .build()).toList();
     }
 }

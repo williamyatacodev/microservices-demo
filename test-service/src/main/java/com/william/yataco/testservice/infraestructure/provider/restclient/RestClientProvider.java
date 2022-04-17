@@ -1,11 +1,9 @@
 package com.william.yataco.testservice.infraestructure.provider.restclient;
 
 import com.william.yataco.testservice.application.data.UserRequest;
-import com.william.yataco.testservice.domain.model.Movement;
+import com.william.yataco.testservice.domain.model.Movements;
 import com.william.yataco.testservice.domain.model.User;
 import com.william.yataco.testservice.domain.model.UserToken;
-
-import java.util.List;
 
 public interface RestClientProvider {
 
@@ -13,5 +11,5 @@ public interface RestClientProvider {
 
     User getInfoUser(String authorization);
 
-    List<Movement> getMovements(String authorization, String identifierUser, int offSet);
+    Movements getMovements(String authorization, String identifierUser, int offSet);
 }

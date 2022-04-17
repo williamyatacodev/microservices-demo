@@ -18,12 +18,10 @@ public class DemoIntegrationAdapter implements DemoIntegrationPort {
     public DemoIntegrationAdapter(RestClientProvider restClientProvider) {
         this.restClientProvider = restClientProvider;
     }
-
     @Override
     public UserToken loginToUser(UserRequest userRequest) {
         return restClientProvider.loginToUser(userRequest);
     }
-
     @Override
     public User getInfoUser(String authorization) {
         return restClientProvider.getInfoUser(authorization);
@@ -31,6 +29,6 @@ public class DemoIntegrationAdapter implements DemoIntegrationPort {
 
     @Override
     public List<Movement> getMovements(String authorization, String identifierUser, int offSet) {
-        return restClientProvider.getMovements(authorization, identifierUser,offSet);
+        return restClientProvider.getMovements(authorization, identifierUser,offSet).getData();
     }
 }
