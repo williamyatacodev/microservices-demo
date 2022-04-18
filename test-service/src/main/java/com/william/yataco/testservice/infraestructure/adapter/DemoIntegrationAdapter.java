@@ -3,13 +3,14 @@ package com.william.yataco.testservice.infraestructure.adapter;
 import com.william.yataco.testservice.application.data.UserRequest;
 import com.william.yataco.testservice.domain.model.Movement;
 import com.william.yataco.testservice.domain.model.User;
-import com.william.yataco.testservice.domain.model.UserToken;
 import com.william.yataco.testservice.domain.port.spi.DemoIntegrationPort;
 import com.william.yataco.testservice.infraestructure.provider.restclient.RestClientProvider;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Log4j2
 @Component
 public class DemoIntegrationAdapter implements DemoIntegrationPort {
 
@@ -19,16 +20,19 @@ public class DemoIntegrationAdapter implements DemoIntegrationPort {
         this.restClientProvider = restClientProvider;
     }
     @Override
-    public UserToken loginToUser(UserRequest userRequest) {
-        return restClientProvider.loginToUser(userRequest);
+    public void loginToUser(UserRequest userRequest) {
+        log.info("loginToUser()");
+        restClientProvider.loginToUser(userRequest);
     }
     @Override
-    public User getInfoUser(String authorization) {
-        return restClientProvider.getInfoUser(authorization);
+    public User getInfoUser() {
+        log.info("getInfoUser()");
+        return restClientProvider.getInfoUser();
     }
 
     @Override
-    public List<Movement> getMovements(String authorization, String identifierUser, int offSet) {
-        return restClientProvider.getMovements(authorization, identifierUser,offSet).getData();
+    public List<Movement> getMovements(String identifierUser, int offSet) {
+        log.info("getMovements()");
+        return restClientProvider.getMovements(identifierUser,offSet).getData();
     }
 }

@@ -48,17 +48,17 @@ class DemoServiceTest {
         User user = new User();
         user.setId("id");
         List<Movement> movements = Util.buildListMovement();
-        given(demoIntegrationPort.loginToUser(any(UserRequest.class))).willReturn(userToken);
-        given(demoIntegrationPort.getInfoUser(anyString())).willReturn(user);
-        given(demoIntegrationPort.getMovements(anyString(),anyString(),anyInt())).willReturn(movements);
+        doNothing().when(demoIntegrationPort).loginToUser(any(UserRequest.class));
+        given(demoIntegrationPort.getInfoUser()).willReturn(user);
+        given(demoIntegrationPort.getMovements(anyString(),anyInt())).willReturn(movements);
         doNothing().when(demoPersistencePort).saveMovements(movements);
         given(demoPersistencePort.getMovements()).willReturn(movements);
 
         assertEquals(2, demoService.processEvent(userRequest).size());
 
         verify(demoIntegrationPort).loginToUser(any(UserRequest.class));
-        verify(demoIntegrationPort).getInfoUser(anyString());
-        verify(demoIntegrationPort, times(2)).getMovements(anyString(),anyString(),anyInt());
+        verify(demoIntegrationPort).getInfoUser();
+        verify(demoIntegrationPort, times(2)).getMovements(anyString(),anyInt());
         verify(demoPersistencePort, times(2)).saveMovements(movements);
         verify(demoPersistencePort).getMovements();
     }
@@ -68,8 +68,7 @@ class DemoServiceTest {
 
         UserRequest userRequest = new UserRequest();
         DemoTemplateException demoTemplateException = new DemoTemplateException(HttpStatus.UNAUTHORIZED,"Error 401","");
-        given(demoIntegrationPort.loginToUser(any(UserRequest.class))).willThrow(demoTemplateException);
-
+        doThrow(demoTemplateException).doNothing().when(demoIntegrationPort).loginToUser(any(UserRequest.class));
         assertThrows(ResponseStatusException.class, () -> {
             List<MovementResponse> movementResponses = demoService.processEvent(userRequest);
         });

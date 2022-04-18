@@ -14,10 +14,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -35,7 +35,7 @@ class DemoControllerTest {
     private DemoHandler demoHandler;
 
     @Test
-    void givenMovements_whenSendWithParameters_thenStatus200()
+    void givenMovements_whenSendWithBasicAuthorizationAndWithParameters_thenStatus200()
             throws Exception {
 
         List<MovementResponse> movementResponses = Util.buildListMovement();
@@ -43,7 +43,7 @@ class DemoControllerTest {
         given(demoHandler.processEvent(anyString(),anyString())).willReturn(movementResponses);
 
         mockMvc.perform(get("/runTest?username=demo&password=demo")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(httpBasic("demo","demo")))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -53,7 +53,16 @@ class DemoControllerTest {
     }
 
     @Test
-    void givenMovements_whenSendWithoutParameters_thenStatus400()
+    void givenMovements_whenSendWithBasicAuthorizationAndWithoutParameters_thenStatus400()
+            throws Exception {
+
+        mockMvc.perform(get("/runTest")
+                        .contentType(MediaType.APPLICATION_JSON).with(httpBasic("demo","demo")))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void givenMovements_whenSendWithoutBasicAuthorization_thenStatus401()
             throws Exception {
 
         mockMvc.perform(get("/runTest")

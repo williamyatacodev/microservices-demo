@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.ResponseActions;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 @ExtendWith(SpringExtension.class)
 @RestClientTest
+@ActiveProfiles("test")
 class DemoErrorHandlerTest {
 
     @Autowired
@@ -61,9 +63,19 @@ class DemoErrorHandlerTest {
     }
 
     @Test
-    void  givenRemoteApiCall_when204_ThrowNotContent() {
+    void  givenRemoteApiCall_when204_thenThrowNotContent() {
 
         responseActions.andRespond(withNoContent());
+
+        String response = restTemplate.getForObject("/demo", String.class);
+
+        assertNull(response);
+    }
+
+    @Test
+    void  givenRemoteApiCall_when302_thenThrowFound() {
+
+        responseActions.andRespond(withStatus(HttpStatus.FOUND));
 
         String response = restTemplate.getForObject("/demo", String.class);
 

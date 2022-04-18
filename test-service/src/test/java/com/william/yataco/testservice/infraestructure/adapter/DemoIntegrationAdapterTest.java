@@ -18,6 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
@@ -34,10 +35,10 @@ class DemoIntegrationAdapterTest {
     void loginToUser_whenLoginToUserRequest_thenOk() {
 
         UserRequest userRequest = new UserRequest();
-        UserToken userToken = new UserToken();
-        given(restClientProvider.loginToUser(any(UserRequest.class))).willReturn(userToken);
 
-        assertNotNull(demoIntegrationAdapter.loginToUser(userRequest));
+        doNothing().when(restClientProvider).loginToUser(any(UserRequest.class));
+
+        demoIntegrationAdapter.loginToUser(userRequest);
 
         verify(restClientProvider).loginToUser(any(UserRequest.class));
     }
@@ -46,11 +47,11 @@ class DemoIntegrationAdapterTest {
     void getInfoUser_whenToken_thenOk() {
 
         User user = new User();
-        given(restClientProvider.getInfoUser(anyString())).willReturn(user);
+        given(restClientProvider.getInfoUser()).willReturn(user);
 
-        assertNotNull(demoIntegrationAdapter.getInfoUser("token"));
+        assertNotNull(demoIntegrationAdapter.getInfoUser());
 
-        verify(restClientProvider).getInfoUser(anyString());
+        verify(restClientProvider).getInfoUser();
     }
 
     @Test
@@ -59,10 +60,10 @@ class DemoIntegrationAdapterTest {
         Movements movements = new Movements();
         List<Movement> movementListMock = Util.buildListMovement();
         movements.setData(movementListMock);
-        given(restClientProvider.getMovements(anyString(),anyString(),anyInt())).willReturn(movements);
+        given(restClientProvider.getMovements(anyString(),anyInt())).willReturn(movements);
 
-        assertNotNull(demoIntegrationAdapter.getMovements("token","id",0));
+        assertNotNull(demoIntegrationAdapter.getMovements("id",0));
 
-        verify(restClientProvider).getMovements(anyString(),anyString(),anyInt());
+        verify(restClientProvider).getMovements(anyString(),anyInt());
     }
 }

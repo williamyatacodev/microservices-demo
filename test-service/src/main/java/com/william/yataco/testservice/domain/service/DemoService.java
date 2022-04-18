@@ -5,17 +5,16 @@ import com.william.yataco.testservice.application.data.UserRequest;
 import com.william.yataco.testservice.domain.handler.DemoTemplateException;
 import com.william.yataco.testservice.domain.model.Movement;
 import com.william.yataco.testservice.domain.model.User;
-import com.william.yataco.testservice.domain.model.UserToken;
 import com.william.yataco.testservice.domain.port.api.DemoServicePort;
 import com.william.yataco.testservice.domain.port.spi.DemoIntegrationPort;
 import com.william.yataco.testservice.domain.port.spi.DemoPersistencePort;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-@Slf4j
+@Log4j2
 @Service
 public class DemoService implements DemoServicePort {
 
@@ -28,16 +27,16 @@ public class DemoService implements DemoServicePort {
     }
     @Override
     public List<MovementResponse> processEvent(UserRequest userRequest) {
-
+        log.info("processEvent()");
         try {
             //Login
-            UserToken userToken = demoIntegrationPort.loginToUser(userRequest);
+            demoIntegrationPort.loginToUser(userRequest);
             //Me
-            User user = demoIntegrationPort.getInfoUser(userToken.getAccessToken());
+            User user = demoIntegrationPort.getInfoUser();
             //Save first 10 movements
-            this.saveMovements(userToken.getAccessToken(),user.getId(),0);
+            this.saveMovements(user.getId(),0);
             //Save next 10 movements
-            this.saveMovements(userToken.getAccessToken(),user.getId(),10);
+            this.saveMovements(user.getId(),10);
             //Get Movements from Database
             List<Movement> movementList = demoPersistencePort.getMovements();
             return movementList.stream().map(movement -> MovementResponse.builder()
@@ -54,9 +53,10 @@ public class DemoService implements DemoServicePort {
         }
     }
 
-    private void saveMovements(String accessToken,String identifier, int offSet){
+    private void saveMovements(String identifier, int offSet){
+        log.info("saveMovements()");
         //Movements
-        List<Movement> movements = demoIntegrationPort.getMovements(accessToken,identifier,offSet);
+        List<Movement> movements = demoIntegrationPort.getMovements(identifier,offSet);
         //Save Movements
         demoPersistencePort.saveMovements(movements);
     }

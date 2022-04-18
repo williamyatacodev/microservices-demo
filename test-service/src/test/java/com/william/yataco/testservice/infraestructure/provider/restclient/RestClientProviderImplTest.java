@@ -50,6 +50,7 @@ class RestClientProviderImplTest {
     private ConfigProperties configProperties;
     @InjectMocks
     private RestClientProviderImpl restClientProvider;
+
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
@@ -67,8 +68,7 @@ class RestClientProviderImplTest {
        when(restTemplate.postForEntity(anyString(), any(UserRequest.class), any(Class.class)))
           .thenReturn(new ResponseEntity(userTokenResponse,HttpStatus.OK));
 
-       UserToken userToken = restClientProvider.loginToUser(userRequest);
-       assertEquals(userTokenResponse, userToken);
+       restClientProvider.loginToUser(userRequest);
 
        verify(restTemplate).postForEntity(anyString(), any(UserRequest.class), any(Class.class));
     }
@@ -77,11 +77,10 @@ class RestClientProviderImplTest {
     void getInfoUser_whenGetInformationUserWithToken_thenOk() {
         User userResponse = new User();
         userResponse.setId(UUID.randomUUID().toString());
-        String token = "token";
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
                 .thenReturn(ResponseEntity.ok(userResponse));
 
-        User user = restClientProvider.getInfoUser(token);
+        User user = restClientProvider.getInfoUser();
         assertEquals(userResponse, user);
 
         verify(restTemplate).exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
@@ -89,7 +88,6 @@ class RestClientProviderImplTest {
 
     @Test
     void getMovements_whenGetMovementWithToken_thenOk() {
-        String token = "token";
         String identifier = UUID.randomUUID().toString();
         Movements movementsResponse = new Movements();
         List<Movement> movementList = Util.buildListMovement();
@@ -98,7 +96,7 @@ class RestClientProviderImplTest {
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), any(Class.class),any(Map.class)))
                 .thenReturn(ResponseEntity.ok(movementsResponse));
 
-        Movements movements = restClientProvider.getMovements(token,identifier,0);
+        Movements movements = restClientProvider.getMovements(identifier,0);
 
         assertEquals(movementsResponse, movements);
 
