@@ -23,9 +23,9 @@ spring:
       ddl-auto: update
     show-sql: true
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:3306/demo_test
-    username: root
-    password: demo
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:demo_test}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:demo}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 application:
