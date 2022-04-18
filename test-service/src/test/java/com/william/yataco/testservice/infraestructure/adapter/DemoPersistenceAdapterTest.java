@@ -16,6 +16,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -49,7 +51,7 @@ class DemoPersistenceAdapterTest {
 
         MovementEntity movementEntity = new MovementEntity();
         movementEntity.setId(UUID.randomUUID().toString());
-        List<MovementEntity> movementEntityList = List.of(movementEntity);
+        List<MovementEntity> movementEntityList = Stream.of(movementEntity).collect(Collectors.toList());
         movementEntityRepository.saveAllAndFlush(movementEntityList);
         int listMovement = demoPersistenceAdapter.getMovements().size();
         assertEquals(1, listMovement);

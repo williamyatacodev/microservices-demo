@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -46,7 +47,7 @@ public class DemoService implements DemoServicePort {
                             .description(movement.getDescription())
                             .type(movement.getType())
                             .build())
-                    .toList();
+                    .collect(Collectors.toList());
         }catch (DemoTemplateException e){
             throw new ResponseStatusException(
                     e.getStatusCode(), e.getError(),e.getCause());
